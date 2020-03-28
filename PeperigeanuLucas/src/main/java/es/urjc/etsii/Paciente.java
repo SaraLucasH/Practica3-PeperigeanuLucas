@@ -2,6 +2,7 @@ package es.urjc.etsii;
 import javax.persistence.*;
 
 @Entity
+@Table(name="Paciente")
 public class Paciente {
 
 	@Id
@@ -21,8 +22,8 @@ public class Paciente {
 	private int hepatitis ; 
 	private int cancer;
 	
-	//@OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
-	//private Hecho hecho;
+	@OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+	private Hecho hecho;
 	
 	public Paciente() {
 	}
@@ -157,11 +158,11 @@ public class Paciente {
 	}
 	
 	
-	/*public Hecho getHecho() {
+	public Hecho getHecho() {
 		return hecho;
 	}
 	
 	public void setHecho(Hecho h) {
 		this.hecho=h;
-	}*/
+	}
 }

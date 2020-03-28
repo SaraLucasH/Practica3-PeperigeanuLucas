@@ -10,17 +10,17 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Hospital {
+	
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	private String id;	
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;	
 	private String nombre;
 	private String cpostal;
 	private String autopista;
 	private String gestor;
 	// Un hospital para muchos hechos. Campo en clase hecho es "hospital_id".
-    /*@OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
-	private Set<Hecho> hechos;*/
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+	private Set<Hecho> hechos;
 	
 	public Hospital() {
 	}
@@ -33,11 +33,11 @@ public class Hospital {
 	}
 
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -73,12 +73,12 @@ public class Hospital {
 		this.gestor = gestor;
 	}
 	
-   /* public Set<Hecho> getHechos() {
+    public Set<Hecho> getHechos() {
         return hechos;
     }
 
 	public void setHechos(Set<Hecho> hechos) {
 		this.hechos = hechos;
-	}*/
+	}
 	
 }

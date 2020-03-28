@@ -22,8 +22,8 @@ public class Tiempo {
 	private String diasemana;
 	private int esfinde;
 
-	/*@OneToMany(mappedBy = "fechaIngreso", cascade = CascadeType.ALL)
-	private Set<Hecho> hechos;*/
+	@OneToMany(mappedBy = "fechaIngreso", cascade = CascadeType.ALL)
+	private Set<Hecho> hechos;
 	
 	
 	public Tiempo() {
@@ -87,11 +87,11 @@ public class Tiempo {
 		this.esfinde = esfinde;
 	}
 	
-    /*public Set<Hecho> getHechos() {
+    public Set<Hecho> getHechos() {
         return hechos;
     }
 	public void setHechos(Set<Hecho> hechos) {
 		this.hechos = hechos;
-	}*/
+	}
 	
 }

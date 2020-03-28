@@ -13,17 +13,17 @@ public class Hecho {
     @GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
-	/*@OneToOne
-    @JoinColumn(name = "cliente_id", updatable = false, nullable = false)*/
-	//private Paciente cliente;
+	@OneToOne
+    @JoinColumn(name = "cliente_id", updatable = false, nullable = false)
+	private Paciente cliente;
 	
-	/*@ManyToOne
-    @JoinColumn(name = "hospital_id")*/
-	//private Hospital hospital;
+	@ManyToOne
+    @JoinColumn(name = "hospital_id")
+	private Hospital hospital;
 
-	/*@ManyToOne
-    @JoinColumn(name = "fechaIngreso_id")*/
-	//private Tiempo fechaIngreso;
+	@ManyToOne
+    @JoinColumn(name = "fechaIngreso_id")
+	private Tiempo fechaIngreso;
 	private int duracion;
 	private String uci;
 	private String fallecido;
@@ -53,7 +53,7 @@ public class Hecho {
 	}
 
 	
-	/*public Paciente getCliente_id() {
+	public Paciente getCliente_id() {
 		return cliente;
 	}
 
@@ -76,7 +76,7 @@ public class Hecho {
 
 	public void setFechaIngreso(Tiempo fechaIngreso_id) {
 		this.fechaIngreso = fechaIngreso_id;
-	}*/
+	}
 
 	public int getDuracion() {
 		return duracion;

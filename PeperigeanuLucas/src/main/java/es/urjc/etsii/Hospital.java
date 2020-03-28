@@ -1,10 +1,26 @@
+package es.urjc.etsii;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Hospital {
+	@Id
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;	
 	private String nombre;
 	private String cpostal;
 	private String autopista;
 	private String gestor;
+	// Un hospital para muchos hechos. Campo en clase hecho es "hospital_id".
+    /*@OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+	private Set<Hecho> hechos;*/
 	
 	public Hospital() {
 	}
@@ -16,6 +32,7 @@ public class Hospital {
 		this.gestor = gestor;
 	}
 
+	
 	public String getId() {
 		return id;
 	}
@@ -55,5 +72,13 @@ public class Hospital {
 	public void setGestor(String gestor) {
 		this.gestor = gestor;
 	}
+	
+   /* public Set<Hecho> getHechos() {
+        return hechos;
+    }
+
+	public void setHechos(Set<Hecho> hechos) {
+		this.hechos = hechos;
+	}*/
 	
 }

@@ -1,5 +1,11 @@
+package es.urjc.etsii;
+import javax.persistence.*;
 
+@Entity
 public class Paciente {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private int edad;
 	private int sexo;
@@ -14,6 +20,9 @@ public class Paciente {
 	private int EPOC ; 
 	private int hepatitis ; 
 	private int cancer;
+	
+	//@OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+	//private Hecho hecho;
 	
 	public Paciente() {
 	}
@@ -148,4 +157,11 @@ public class Paciente {
 	}
 	
 	
+	/*public Hecho getHecho() {
+		return hecho;
+	}
+	
+	public void setHecho(Hecho h) {
+		this.hecho=h;
+	}*/
 }

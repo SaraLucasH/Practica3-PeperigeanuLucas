@@ -1,6 +1,18 @@
+package es.urjc.etsii;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Tiempo {
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private Date fecha;
 	private int dia;
@@ -9,6 +21,9 @@ public class Tiempo {
 	private int cuatrim;
 	private String diasemana;
 	private int esfinde;
+
+	/*@OneToMany(mappedBy = "fechaIngreso", cascade = CascadeType.ALL)
+	private Set<Hecho> hechos;*/
 	
 	
 	public Tiempo() {
@@ -22,6 +37,7 @@ public class Tiempo {
 		this.diasemana = diasemana;
 		this.esfinde = esfinde;
 	}
+	
 	public int getId() {
 		return id;
 	}
@@ -70,4 +86,12 @@ public class Tiempo {
 	public void setEsfinde(int esfinde) {
 		this.esfinde = esfinde;
 	}
+	
+    /*public Set<Hecho> getHechos() {
+        return hechos;
+    }
+	public void setHechos(Set<Hecho> hechos) {
+		this.hechos = hechos;
+	}*/
+	
 }

@@ -1,4 +1,5 @@
 package es.urjc.etsii;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -12,7 +13,6 @@ import javax.persistence.OneToMany;
 public class Hospital {
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;	
 	private String nombre;
 	private String cpostal;
@@ -25,11 +25,13 @@ public class Hospital {
 	public Hospital() {
 	}
 
-	public Hospital(String nombre, String cpostal, String autopista, String gestor) {
+	public Hospital(int id,String nombre, String cpostal, String autopista, String gestor) {
+		this.id=id;
 		this.nombre = nombre;
 		this.cpostal = cpostal;
 		this.autopista = autopista;
 		this.gestor = gestor;
+		this.hechos=new HashSet<Hecho>();
 	}
 
 	

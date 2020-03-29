@@ -1,5 +1,6 @@
 package es.urjc.etsii;
-import java.util.Date;
+
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,7 @@ public class Tiempo {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	private Date fecha;
+	private String fecha;
 	private int dia;
 	private int mes;
 	private int anio;
@@ -28,7 +29,7 @@ public class Tiempo {
 	
 	public Tiempo() {
 	}
-	public Tiempo(Date fecha, int dia, int mes, int anio, int cuatrim, String diasemana, int esfinde) {
+	public Tiempo(String fecha, int dia, int mes, int anio, int cuatrim, String diasemana, int esfinde) {
 		this.fecha = fecha;
 		this.dia = dia;
 		this.mes = mes;
@@ -36,6 +37,7 @@ public class Tiempo {
 		this.cuatrim = cuatrim;
 		this.diasemana = diasemana;
 		this.esfinde = esfinde;
+		this.hechos=new HashSet<Hecho>();
 	}
 	
 	public int getId() {
@@ -44,10 +46,10 @@ public class Tiempo {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Date getFecha() {
+	public String getFecha() {
 		return fecha;
 	}
-	public void setFecha(Date fecha) {
+	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
 	public int getDia() {

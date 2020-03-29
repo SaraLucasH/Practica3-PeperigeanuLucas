@@ -6,7 +6,6 @@ import javax.persistence.*;
 public class Paciente {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private int edad;
 	private int sexo;
@@ -28,11 +27,11 @@ public class Paciente {
 	public Paciente() {
 	}
 
-	public Paciente(int edad, int sexo, int iMC, int formaFisica, int tabaquismo, int alcoholismo, int colesterol,
+	public Paciente(int id,int edad, int sexo, int iMC, int formaFisica, int tabaquismo, int alcoholismo, int colesterol,
 			int hipertension, int cardiopatia, int reuma, int ePOC, int hepatitis, int cancer) {
 		this.edad = edad;
 		this.sexo = sexo;
-		IMC = iMC;
+		this.IMC = iMC;
 		this.formaFisica = formaFisica;
 		this.tabaquismo = tabaquismo;
 		this.alcoholismo = alcoholismo;
@@ -40,9 +39,11 @@ public class Paciente {
 		this.hipertension = hipertension;
 		this.cardiopatia = cardiopatia;
 		this.reuma = reuma;
-		EPOC = ePOC;
+		this.EPOC = ePOC;
 		this.hepatitis = hepatitis;
 		this.cancer = cancer;
+		this.id=id;
+		this.hecho= new Hecho();
 	}
 
 	public int getId() {

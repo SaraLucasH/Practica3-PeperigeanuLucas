@@ -14,7 +14,7 @@ public class Hecho {
 	private int id;
 	
 	@OneToOne
-    @JoinColumn(name = "cliente_id", updatable = false, nullable = false)
+    @JoinColumn(name = "cliente_id")
 	private Paciente cliente;
 	
 	@ManyToOne
@@ -33,10 +33,9 @@ public class Hecho {
 
 	public Hecho(Paciente cliente_id, Hospital hospital_id, Tiempo fechaIngreso_id, int duracion, String uci, String fallecido,
 			int tratamiento) {
-		super();
-		/*this.cliente = cliente_id;
+		this.cliente = cliente_id;
 		this.hospital = hospital_id;
-		this.fechaIngreso= fechaIngreso_id;*/
+		this.fechaIngreso= fechaIngreso_id;
 		this.duracion = duracion;
 		this.uci = uci;
 		this.fallecido = fallecido;

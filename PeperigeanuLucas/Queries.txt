@@ -1,0 +1,4 @@
+Column chart: SELECT hecho.id, hecho.fallecido, hecho.uci, hecho.cliente_id, hecho.hospital_id
+FROM hecho
+WHERE (((hecho.fallecido)="Si") AND ((hecho.uci)="Si"));
+

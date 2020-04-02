@@ -153,6 +153,9 @@ public class DataBaseLoader {
 					String[] aux=rowH[2].split("/");
 					rowH[2]=aux[0]+"/"+aux[1]+"/"+"20"+aux[2];
 				}
+				if(rowH[4].contains("S") || rowH[4].contains("s")) {
+					rowH[4]="Si";
+				}
 				
 				while(i<rowP.length) {
 					if(rowP[i].equalsIgnoreCase("V")|| rowP[i].equalsIgnoreCase("No")) {

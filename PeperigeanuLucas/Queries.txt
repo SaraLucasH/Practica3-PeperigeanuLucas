@@ -12,3 +12,9 @@ WHERE (((paciente.alcoholismo)=1) OR ((paciente.cancer)>0) OR ((paciente.cardiop
 Line Chart: "Grafico por fecha, desde la primera, progresion de las hospitalizaciones a lo largo del tiempo"
 SELECT hecho.hospital_id, tiempo.fecha
 FROM tiempo INNER JOIN hecho ON tiempo.[id] = hecho.[fecha_ingreso_id];
+----
+Apartado 4
+"SELECT filtrado_colaborativo.paciente_id, filtrado_colaborativo.r1, filtrado_colaborativo.r2, filtrado_colaborativo.r3 "+
+    					"FROM (test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id) "+
+    					"INNER JOIN test.filtrado_colaborativo ON paciente.id = filtrado_colaborativo.paciente_id"+ 
+    					"WHERE paciente.id = filtrado_colaborativo.paciente_id AND  hecho.hospital_id=1;"

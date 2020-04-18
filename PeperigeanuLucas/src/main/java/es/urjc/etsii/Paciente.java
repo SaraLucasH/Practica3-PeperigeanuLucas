@@ -3,10 +3,12 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="Paciente")
+@TableGenerator(name="tab", initialValue=1)
 public class Paciente {
-
 	@Id
+	@GeneratedValue(strategy=GenerationType.TABLE, generator="tab")
 	private int id;
+	
 	private int edad;
 	private int sexo;
 	private int IMC;
@@ -24,10 +26,13 @@ public class Paciente {
 	@OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
 	private Hecho hecho;
 	
+	@OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL)
+	private FiltradoColaborativo recomendaciones;
+	
 	public Paciente() {
 	}
 
-	public Paciente(int id,int edad, int sexo, int iMC, int formaFisica, int tabaquismo, int alcoholismo, int colesterol,
+	public Paciente(int edad, int sexo, int iMC, int formaFisica, int tabaquismo, int alcoholismo, int colesterol,
 			int hipertension, int cardiopatia, int reuma, int ePOC, int hepatitis, int cancer) {
 		this.edad = edad;
 		this.sexo = sexo;
@@ -41,8 +46,7 @@ public class Paciente {
 		this.reuma = reuma;
 		this.EPOC = ePOC;
 		this.hepatitis = hepatitis;
-		this.cancer = cancer;
-		this.id=id;
+		this.cancer = cancer;		
 		this.hecho= new Hecho();
 	}
 
@@ -165,5 +169,13 @@ public class Paciente {
 	
 	public void setHecho(Hecho h) {
 		this.hecho=h;
+	}
+	
+	public FiltradoColaborativo getRecomendaciones() {
+		return recomendaciones;
+	}
+
+	public void setRecomendaciones(FiltradoColaborativo recomendaciones) {
+		this.recomendaciones = recomendaciones;
 	}
 }

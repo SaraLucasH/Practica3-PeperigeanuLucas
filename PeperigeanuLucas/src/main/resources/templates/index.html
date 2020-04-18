@@ -1,101 +1,48 @@
+<?php
+	$con = mysqli_connect('localhost','newuser','URJC2019!','test');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <meta charset="UTF-8"></meta>
+    <title>Inicio</title>
+   	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+ 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+ 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+		google.charts.load('current', {'packages':['table']});
+		google.setOnLoadCallback(drawChart);
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load("current", {packages:["corechart"]});
-      google.charts.setOnLoadCallback(drawPieChart);
-
-      function drawPieChart() {
-        var data = google.visualization.arrayToDataTable([
-
-        ]);
+      	function drawChart() {
+        	var data = google.visualization.arrayToDataTable([
+        		['paciente_id','r1','r2','r3'],
+    			<?php 
+    				$query = ;
+    				$exec = mysqli_query($con,$query);
+    				while($row = mysqli_fetch_array($exec)){
+    					echo "['".$row['paciente_id']."',".$row['r1']."',".$row['r2']."',".$row['r3']."],";
+    				}
+    			?> 
+    		 ]);
 
         var options = {
-          title: 'My Daily Activities',
-          is3D: true,
+        	showRowNumber: true, width: '75%', height: '75%'
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-        chart.draw(data, options);
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+        table.draw(data, options);
       }
     </script>
-
-    <script type="text/javascript">
-    	google.charts.load('current', {'packages':['bar']});
-    	google.charts.setOnLoadCallback(drawChart);
-
-    	function drawChart() {
-     	 var data = google.visualization.arrayToDataTable([
-        	['Year', 'Sales', 'Expenses', 'Profit'],
-        	['2014', 1000, 400, 200],
-        	['2015', 1170, 460, 250],
-        	['2016', 660, 1120, 300],
-        	['2017', 1030, 540, 350]
-      	]);
-
-     	var options = {
-     	          chart: {
-     	            title: 'Company Performance',
-     	            subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-     	          },
-     	          bars: 'vertical',
-     	          vAxis: {format: 'decimal'},
-     	          height: 400,
-     	          colors: ['#1b9e77', '#d95f02', '#7570b3']
-     	        };
-     	var chart = new google.charts.Bar(document.getElementById('chart_div'));
-
-        chart.draw(data, google.charts.Bar.convertOptions(options));
-
-        var btns = document.getElementById('btn-group');
-
-        btns.onclick = function (e) {
-
-          if (e.target.tagName === 'BUTTON') {
-            options.vAxis.format = e.target.id === 'none' ? '' : e.target.id;
-            chart.draw(data, google.charts.Bar.convertOptions(options));
-          }
-        }
-    </script>
-
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['line']});
-      google.charts.setOnLoadCallback(drawChart);
-
-    function drawLineChart() {
-      ]);
-
-      var options = {
-        chart: {
-          title: 'Box Office Earnings in First Two Weeks of Opening',
-          subtitle: 'in millions of dollars (USD)'
-        },
-        width: 900,
-        height: 500,
-        axes: {
-          x: {
-            0: {side: 'top'}
-          }
-        }
-      };
-
-      var chart = new google.charts.Line(document.getElementById('line_top_x'));
-      chart.draw(data, google.charts.Line.convertOptions(options));
-    }
-  </script>
-
+  	
 </head>
 <body>
-
-    <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
-
-    <div id="barchart_material" style="width: 900px; height: 500px;"></div>
-
-    <div id="line_top_x"></div>
-
+	
+    	<h3>Recomendaciones de compuesto por hospital</h3>
+    	<div id="table_div"></div>    	
+  
+	
 </body>
 </html>

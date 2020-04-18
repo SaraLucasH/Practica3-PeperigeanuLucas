@@ -4,5 +4,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HechoRepository extends CrudRepository<Hecho,Long>{
-
+	
 }

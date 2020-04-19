@@ -1,16 +1,33 @@
 package es.urjc.etsii;
 
+import org.apache.mahout.cf.taste.impl.common.LongPrimitiveIterator;
+import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
+import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
+import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
+import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
+import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.util.List;
 
 @Component
 public class DataBaseLoader {
 
 	String filtradoColaborativo;
 	String pathData="data/";
+	
+	@Autowired
+	private FiltradoService filtradoService;
+	
+	@Autowired
+	private PacienteService pacienteService;
 	
     @Autowired
     private HechoRepository hechoRepository;
@@ -28,7 +45,7 @@ public class DataBaseLoader {
     private FiltradoRepository filtradoRepository;
     
     @PostConstruct
-    private void initDatabase() throws IOException {
+    private void initDatabase() throws Exception{
     	this.hechoRepository.deleteAll();
     	this.hospitalRepository.deleteAll();
     	this.pacienteRepository.deleteAll();
@@ -40,7 +57,7 @@ public class DataBaseLoader {
         this.cargaDatos();
 
     }
-    private void cargaDatos() throws IOException {
+    private void cargaDatos() throws Exception {
     	//dimTiempo
     	cargaTiempo(pathData+"dimTIEMPO.csv");
     	
@@ -54,16 +71,52 @@ public class DataBaseLoader {
     	cargaPacientes(pathData+"P4.csv",pathData+"H4.csv",4,pathData+"datos_filtrado_colaborativo_4.csv");
     	
     	//Filtrado Colaborativo. Juntamos todos los datos en un unico csv
-    	cargaFiltradoColaborativo(pathData+"datasetFiltradoColaborativo.csv");
+    	cargaFiltradoColaborativoFile(pathData+"datasetFiltradoColaborativo.csv");
+    	cargaFiltrado();
     }
     
-	private void cargaFiltradoColaborativo(String path) throws IOException {
+	private void cargaFiltrado() throws Exception{
+		DataModel model = new FileDataModel(new File("data/datasetFiltradoColaborativo.csv"));
+		UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
+		UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
+		UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
+		
+		LongPrimitiveIterator it=model.getUserIDs();
+		Long idU;
+		List<RecommendedItem> recommendations;
+		
+		while(it.hasNext()) {
+			idU=it.next();
+			recommendations = recommender.recommend(idU, 3);
+			switch(recommendations.size()){
+			case 0:
+				this.filtradoService.addRecomendacion(this.pacienteService.getPaciente(idU),Long.MIN_VALUE,Long.MIN_VALUE,Long.MIN_VALUE);
+				break;
+			case 1:
+				this.filtradoService.addRecomendacion(this.pacienteService.getPaciente(idU), recommendations.get(0).getItemID(),
+						Long.MIN_VALUE,Long.MIN_VALUE);
+				break;
+			case 2:
+				this.filtradoService.addRecomendacion(this.pacienteService.getPaciente(idU), recommendations.get(0).getItemID(),
+		    			recommendations.get(1).getItemID(),Long.MIN_VALUE);
+				break;
+			case 3:
+				this.filtradoService.addRecomendacion(this.pacienteService.getPaciente(idU), recommendations.get(0).getItemID(),
+		    			recommendations.get(1).getItemID(),
+		    			recommendations.get(2).getItemID());
+				break;
+			}	    	 
+		}
+		
+	}
+	private void cargaFiltradoColaborativoFile(String path) throws IOException {
 		File file= new File(path);	
 		Writer out = new BufferedWriter(new OutputStreamWriter(
 			    new FileOutputStream(file)));
 		//"id,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20\n"
 		out.write(this.filtradoColaborativo);
 		out.close();
+		
 	}
 	
 	private void cargaHospitales(String string) {

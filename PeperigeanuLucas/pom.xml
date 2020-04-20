@@ -23,6 +23,7 @@
   </parent>
   
    <dependencies>
+   		
   <!-- Spring data -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -39,7 +40,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.11</version>
         </dependency>
-
+	<!-- Mahout, machine learning -->
+		<dependency>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-core</artifactId>
+			<version>0.9</version>
+		</dependency>
        <dependency>
            <groupId>javax.annotation</groupId>
            <artifactId>javax.annotation-api</artifactId>

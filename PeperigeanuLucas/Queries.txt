@@ -1,13 +1,30 @@
 Column chart: "2 barras por hospital que representen numero de fallecidos y ucis"
-Column chart: SELECT hecho.id, hecho.fallecido, hecho.uci, hecho.cliente_id, hecho.hospital_id
-FROM hecho
+Column chart: SELECT hecho.hospital_id, hecho.fallecido, hecho.uci
+FROM test.hecho
 WHERE (((hecho.fallecido)="Si") AND ((hecho.uci)="Si"));
+
+////////////
+SELECT hecho.hospital_id, count(hecho.fallecido), count(hecho.fallecido)
+FROM test.hecho
+WHERE (((hecho.fallecido)="Si") AND ((hecho.uci)="Si"))
+group by hecho.hospital_id;
+////////////////
 
 
 Pie chart: "1 grafico por hospital, donde es un quesito que es numero de pacientes por alcoholismo...."
 SELECT hecho.id, hecho.hospital_id, paciente.alcoholismo, paciente.cancer, paciente.cardiopatia, paciente.colesterol, paciente.hepatitis, paciente.hipertension, paciente.reuma, paciente.tabaquismo, paciente.epoc
 FROM paciente INNER JOIN hecho ON paciente.[id] = hecho.[cliente_id]
 WHERE (((paciente.alcoholismo)=1) OR ((paciente.cancer)>0) OR ((paciente.cardiopatia)=1) OR ((paciente.colesterol)=1) OR ((paciente.hepatitis)=1) OR ((paciente.hipertension)=1) OR ((paciente.reuma)=1) OR ((paciente.tabaquismo)=1) OR ((paciente.epoc)=1));
+/////////////////
+SELECT sum(paciente.alcoholismo), sum(paciente.cancer), sum(paciente.cardiopatia), sum(paciente.colesterol),
+sum(paciente.hepatitis), sum(paciente.hipertension), sum(paciente.reuma), sum(paciente.tabaquismo)
+FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
+WHERE (((paciente.alcoholismo)=1) OR ((paciente.cancer)>0) OR ((paciente.cardiopatia)=1) OR ((paciente.colesterol)=1) OR ((paciente.hepatitis)=1) OR ((paciente.hipertension)=1) OR ((paciente.reuma)=1) OR ((paciente.tabaquismo)=1) OR ((paciente.epoc)=1)) AND
+hecho.hospital_id=1
+;
+/////////////////////
+
+
 
 Line Chart: "Grafico por fecha, desde la primera, progresion de las hospitalizaciones a lo largo del tiempo"
 SELECT hecho.hospital_id, tiempo.fecha

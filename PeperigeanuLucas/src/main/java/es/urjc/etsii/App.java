@@ -20,6 +20,10 @@ import weka.core.converters.CSVLoader;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Discretize;
 import weka.filters.unsupervised.attribute.StringToNominal;
+import weka.clusterers.SimpleKMeans;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 @SpringBootApplication
 public class App implements CommandLineRunner{
@@ -28,8 +32,82 @@ public class App implements CommandLineRunner{
 		SpringApplication.run(App.class, args);
 		reglasAsociacion("data/exito.csv","data/reglasExito.txt");
 		reglasAsociacion("data/noExito.csv","data/reglasFallos.txt");
+		agrupamiento("data/pacientes_fallecidos.csv", "data/protoFallecido.txt");
+		agrupamiento("data/pacientes_uci.csv", "data/protoUCI.txt");
+		agrupamiento("data/pacientes_resto.csv", "data/protoResto.txt");
 	}
-	
+
+	private static void agrupamiento(String path, String rutaSalida) throws Exception{
+		//- Número de clusters que vamos a hacer
+		int K = 3;
+		//- max. num. de iteraciones
+		int maxIteration = 100;
+		//- fichero CSV:
+		// * Este fichero tiene datos numéricos y nominales
+		// * Los atributos de cada ejemplo están separados por ";"
+		// * La primera fila es el nombre de los atributos
+		String inputDataFile = path;
+
+		//- Crear el cargador de CSV
+		File inFile = new File(inputDataFile);
+		CSVLoader loader = new CSVLoader();
+		//- Especificar las caracteristicas del CSV (ver arriba)
+		loader.setFieldSeparator(";");
+		loader.setNoHeaderRowPresent(false);
+		//- Cargar los datos
+		loader.setSource(inFile);
+		Instances data = loader.getDataSet();
+
+		//- Crear un objeto 'K-Means',
+		//  que es el método que vamos a utilizar
+		SimpleKMeans kmeans = new SimpleKMeans();
+		//- Especificar las características del método
+		kmeans.setNumClusters(K);
+		kmeans.setMaxIterations(maxIteration);
+		kmeans.setPreserveInstancesOrder(true);
+
+		//- Ejecutar el agrupamiento sobre los datos
+		try {
+			kmeans.buildClusterer(data);
+		} catch (Exception ex) {
+			System.err.println("Unable to buld Clusterer: " + ex.getMessage());
+			ex.printStackTrace();
+		}
+
+		//- Mostrar en pantalla los prototipos de cada grupo
+		//    (también se les llama 'centroides'
+		Instances centroids = kmeans.getClusterCentroids();
+
+		File file= new File(rutaSalida);
+		FileWriter fr = null;
+		BufferedWriter br = null;
+		String dataWithNewLine=data+System.getProperty("line.separator");
+		try{
+			fr = new FileWriter(file);
+			br = new BufferedWriter(fr);
+			//- Mostrar en pantalla los atributos de los datos
+			br.write(loader.getStructure()+" ...\n\n");
+			br.write("\n");
+			for(int i = 0; i < K; i++){
+				br.write("Cluster " + i + " tamaño: " + kmeans.getClusterSizes()[i]);
+				br.write(" Prototipo: " + centroids.instance(i)+" \n");
+
+			}
+			br.write("--- hecho! ---\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				br.close();
+				fr.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+
 	private static void reglasAsociacion(String path,String rutaSalida) throws Exception{
 		String inputDataFile = path; 
 
@@ -72,6 +150,8 @@ public class App implements CommandLineRunner{
 	    out.write(model.toString());	
 	    out.close();
 	}
+
+
 
 	/* Redefinición de método para ejecutar acciones sobre la BD. */
     @Override

@@ -18,7 +18,7 @@
 
       	function drawTable() {
         	var dataHospital1 = new google.visualization.arrayToDataTable([
-			['paciente_id','Recomendacion 1','Recomendacion 2','Recomendacion 3'],
+			['Id del paciente','Compuesto nº','Compuesto nº','Compuesto nº'],
     			<?php 
 				$query = "SELECT paciente_id,r1,r2,r3 FROM (paciente INNER JOIN hecho ON paciente.id = hecho.cliente_id) INNER JOIN filtrado_colaborativo ON paciente.id = filtrado_colaborativo.paciente_id WHERE paciente.id = filtrado_colaborativo.paciente_id AND  hecho.hospital_id=1";
     				$exec = mysqli_query($con,$query);
@@ -43,7 +43,7 @@
     			?> 
     		 ]);
 			 var dataHospital2 = new google.visualization.arrayToDataTable([
-			['paciente_id','Recomendacion 1','Recomendacion 2','Recomendacion 3'],
+			['Id del paciente','Compuesto nº','Compuesto nº','Compuesto nº'],
     			<?php 
 				$query = "SELECT paciente_id,r1,r2,r3 FROM (paciente INNER JOIN hecho ON paciente.id = hecho.cliente_id) INNER JOIN filtrado_colaborativo ON paciente.id = filtrado_colaborativo.paciente_id WHERE paciente.id = filtrado_colaborativo.paciente_id AND  hecho.hospital_id=2";
     				$exec = mysqli_query($con,$query);
@@ -68,7 +68,7 @@
     			?> 
     		 ]);
 			 var dataHospital3 = new google.visualization.arrayToDataTable([
-			['paciente_id','Recomendacion 1','Recomendacion 2','Recomendacion 3'],
+			['Id del paciente','Compuesto nº','Compuesto nº','Compuesto nº'],
     			<?php 
 				$query = "SELECT paciente_id,r1,r2,r3 FROM (paciente INNER JOIN hecho ON paciente.id = hecho.cliente_id) INNER JOIN filtrado_colaborativo ON paciente.id = filtrado_colaborativo.paciente_id WHERE paciente.id = filtrado_colaborativo.paciente_id AND  hecho.hospital_id=3";
     				$exec = mysqli_query($con,$query);
@@ -93,7 +93,7 @@
     			?> 
     		 ]);
 			 var dataHospital4 = new google.visualization.arrayToDataTable([
-			['paciente_id','Recomendacion 1','Recomendacion 2','Recomendacion 3'],
+			['Id del paciente','Compuesto nº','Compuesto nº','Compuesto nº'],
     			<?php 
 				$query = "SELECT paciente_id,r1,r2,r3 FROM (paciente INNER JOIN hecho ON paciente.id = hecho.cliente_id) INNER JOIN filtrado_colaborativo ON paciente.id = filtrado_colaborativo.paciente_id WHERE paciente.id = filtrado_colaborativo.paciente_id AND  hecho.hospital_id=4";
     				$exec = mysqli_query($con,$query);
@@ -130,13 +130,13 @@
     </script>
   	
 </head>
-<body>
-	<style>
+<body style="background-color: #d5f4e6;">
+	<style>		
 		.grid-container {
 			display: grid;
 			grid-column-gap: 5px;
-			grid-template-columns: auto auto auto	auto;
-			background-color: #2196F3;
+			grid-template-columns: none none none none;
+			background-color: #d5f4e6;
 			padding: 10px;
 		}
 
@@ -144,16 +144,18 @@
 			background-color: rgba(255, 255, 255, 0.8);
 			border: 1px solid rgba(0, 0, 0, 0.8);
 			padding: 5px;
-			font-size: 30px;
+			font-size: 15px;
 			text-align: center;
 		}
 	</style>
 	<h3>Recomendaciones de compuesto por hospital</h3>
-	<div class="grid-container">
-		<div class="grid-item" id="table_hospital1"></div>
-		<div class="grid-item" id="table_hospital2"></div>
-		<div class="grid-item" id="table_hospital3"></div>		
-		<div class="grid-item" id="table_hospital4"></div>	
-	</div>
+	<table>
+        <tr>
+            <td><div id="table_hospital1"></div></td>
+            <td><div id="table_hospital2"></div></td>
+			<td><div id="table_hospital3"></div></td>
+			<td><div id="table_hospital4"></div></td>
+		</tr>	
+    </table>
 </body>
 </html>

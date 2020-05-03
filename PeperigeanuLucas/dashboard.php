@@ -1,3 +1,6 @@
+//SELECT '10-15' ,count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END),count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)
+                        FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
+						WHERE paciente.edad>30 AND paciente.edad<60;
 <?php
     $con = mysqli_connect('localhost:3310','root','','test');
 ?>
@@ -19,7 +22,7 @@
 
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
-                ['hospital_id', 'count(hecho.fallecido)'],
+                ['Identificador del hospital', 'Nº fallecidos'],
                 <?php
                 $query = "SELECT hecho.hospital_id, count(hecho.fallecido) 
                             FROM test.hecho WHERE ((hecho.fallecido)=\"Si\")
@@ -32,10 +35,7 @@
             ]);
 
             var options = {
-                chart: {
-                    title: 'Número de fallecidos por cada hospital',
-                    subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-                },
+                title: 'Número de fallecidos por cada hospital',                
                 bars: 'horizontal' // Required for Material Bar Charts.
             };
 
@@ -51,7 +51,7 @@
         function drawVisualization() {
             // Some raw data (not necessarily accurate)
             var data = google.visualization.arrayToDataTable([
-                ['hospital_id', 'sum(paciente.alcoholismo)', 'sum(paciente.cancer)', 'sum(paciente.cardiopatia)',
+                ['hospital_id', 'Alcoholismo', 'sum(paciente.cancer)', 'sum(paciente.cardiopatia)',
                 'sum(paciente.colesterol)', 'sum(paciente.hepatitis)', 'sum(paciente.hipertension)',
                 'sum(paciente.reuma)', 'sum(paciente.tabaquismo)'],
                 <?php
@@ -73,8 +73,7 @@
                 title : 'Total de personas por cada hospital agrupadas por patologías',
                 vAxis: {title: 'Total de personas'},
                 hAxis: {title: 'Hospital'},
-                seriesType: 'bars',
-                series: {5: {type: 'line'}}        };
+				seriesType: 'bars'};
 
             var chart = new google.visualization.ComboChart(document.getElementById('barras_hospitales'));
             chart.draw(data, options);
@@ -89,7 +88,7 @@
                 ['hospital_id', 'count(hecho.uci)'],
                 <?php
                 $query = "SELECT hecho.hospital_id, count(hecho.uci) 
-                            FROM test.hecho WHERE (((hecho.uci)=\"Si\") AND ((hecho.uci)=\"Si\")) 
+                            FROM test.hecho WHERE hecho.uci=\"Si\" 
                             group by hecho.hospital_id";
                 $exec = mysqli_query($con,$query);
                 while($row = mysqli_fetch_array($exec)){
@@ -114,22 +113,63 @@
 
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
-                ['mes', 'count(hecho.hospital_id)'],
+                [ 'Mes', 'Hospital 1', 'Hospital 2', 'Hospital 3', 'Hospital 4'],
                 <?php
-                $query = "SELECT tiempo.mes, count(hecho.hospital_id)
+                $query1 = "SELECT tiempo.mes, count(hecho.hospital_id)
                         FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=1 AND tiempo.anio='2020'
+                        group by mes";		
+                $exec1 = mysqli_query($con,$query1);
+				$query2 = "SELECT tiempo.mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=2 AND tiempo.anio='2020'
                         group by mes";
-                $exec = mysqli_query($con,$query);
-                while($row = mysqli_fetch_array($exec)){
-                    echo "['".$row['mes']."',".$row['count(hecho.hospital_id)']."],";
-                }
-                ?>
+                $exec2 = mysqli_query($con,$query2);
+				$query3 = "SELECT tiempo.mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=3 AND tiempo.anio='2020'
+                        group by mes";
+                $exec3 = mysqli_query($con,$query3);
+				$query4 = "SELECT tiempo.mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=4 AND tiempo.anio='2020'
+                        group by mes";
+                $exec4 = mysqli_query($con,$query4);
+				
+				for ($i = 1; $i <= 12; $i++) {					
+					$r1=0;
+					$r2=0;
+					$r3=0;
+					$r4=0;
+					while($row = mysqli_fetch_array($exec1)){
+						if($row['mes']==$i){							
+							$r1=$row['count(hecho.hospital_id)'];
+						}
+					}					
+					while($row = mysqli_fetch_array($exec2)){
+						if($row['mes']==$i){
+							$r2=$row['count(hecho.hospital_id)'];
+						}
+					}
+					while($row = mysqli_fetch_array($exec3)){
+						if($row['mes']==$i){
+							$r3=$row['count(hecho.hospital_id)'];
+						}
+					}
+					while($row = mysqli_fetch_array($exec4)){
+						if($row['mes']==$i){
+							$r4=$row['count(hecho.hospital_id)'];
+						}
+					}
+					
+					echo "[".$i.",".$r1.",".$r2.",".$r3.",".$r4."],";					
+				}                
+				?>				
             ]);
-
             var options = {
-                title: 'Número de pacientes ingresados por cada mes en los últimos 2 años',
+                title: 'Número de pacientes ingresados por mes en el año 2020',
                 curveType: 'function',
-                legend: { position: 'bottom' }
+                legend: { position: 'top' }
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
@@ -170,8 +210,8 @@
     <tr></tr>
     <table>
         <tr>
-            <td><div id="barchart_material" style="width: 380px; height: 290px;"></div></td>
-            <td><div id="curve_chart" style="width: 380px; height: 290px"></div></td>
+            <td><div id="barchart_material" style="width:300px; height: 290px;"></div></td>
+            <td><div id="curve_chart" style="width: 800px; height: 290px"></div></td>
             <td><div id="piechart_3d" style="width: 380px; height: 290px;"></div></td>
         </tr>
     </table>

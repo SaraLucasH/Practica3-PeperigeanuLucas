@@ -42,7 +42,7 @@ public class DataBaseLoader {
     private TiempoRepository tiempoRepository;
     
     @Autowired
-    private FiltradoRepository filtradoRepository;
+    private FiltradoRepository  filtradoRepository;
     
     @PostConstruct
     private void initDatabase() throws Exception{

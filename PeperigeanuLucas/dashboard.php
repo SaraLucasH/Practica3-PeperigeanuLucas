@@ -19,7 +19,7 @@
 
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
-                ['hospital_id', 'count(hecho.fallecido)'],
+                ['hospital_id', 'Total fallecidos'],
                 <?php
                 $query = "SELECT hecho.hospital_id, count(hecho.fallecido) 
                             FROM test.hecho WHERE ((hecho.fallecido)=\"Si\")
@@ -74,7 +74,7 @@
                 vAxis: {title: 'Total de personas'},
                 hAxis: {title: 'Hospital'},
                 seriesType: 'bars',
-                series: {5: {type: 'line'}}        };
+                series: {8: {type: 'line'}}        };
 
             var chart = new google.visualization.ComboChart(document.getElementById('barras_hospitales'));
             chart.draw(data, options);

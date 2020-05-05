@@ -38,15 +38,6 @@ public class App implements CommandLineRunner{
 	}
 
 	private static void agrupamiento(String path, String rutaSalida) throws Exception{
-		/*
-		SELECT paciente.id, paciente.epoc, paciente.imc, paciente.alcoholismo, 
-		paciente.cancer, paciente.cardiopatia, paciente.colesterol, paciente.edad, paciente.forma_fisica,
-		paciente.hepatitis, paciente.hipertension, paciente.reuma, paciente.sexo, paciente.tabaquismo, hecho.uci, hecho.fallecido
-		FROM test.paciente
-		INNER JOIN test.hecho ON hecho.cliente_id = paciente.id
-		WHERE test.hecho.uci = 'No' and test.hecho.fallecido = 'No';
-		 */
-
 		//- Número de clusters que vamos a hacer
 		int K = 3;
 		//- max. num. de iteraciones

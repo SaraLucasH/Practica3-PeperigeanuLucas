@@ -1,6 +1,3 @@
-//SELECT '10-15' ,count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END),count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)
-                        FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
-						WHERE paciente.edad>30 AND paciente.edad<60;
 <?php
     $con = mysqli_connect('localhost:3310','root','','test');
 ?>
@@ -8,6 +5,65 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<style>
+.header{
+    grid-area: header;
+    background-color: aquamarine;
+    font-family: "Lucida Console";
+    font-width: bold;
+}
+
+.grid-container{
+    display: grid;
+    grid-gap: 8px;
+    padding: 10px;
+    background-color: lightsteelblue;
+    grid-template-areas:
+    'header header header'
+    'item1 item2 item3'
+    'item4 item4 item5';
+
+}
+.grid-container > div {
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    font-size: 20px;
+}
+
+        .item1{
+            grid-area: item1;
+            border-color: rgba(255, 255, 255, 0.8);
+            border-style:solid;
+            border-radius: 5px;
+        }
+
+        .item2{
+            grid-area: item2;
+            border-color: rgba(255, 255, 255, 0.8);
+            border-style:solid;
+            border-radius: 5px;
+        }
+        .item3{
+            grid-area: item3;
+            border-color: rgba(255, 255, 255, 0.8);
+            border-style:solid;
+            border-radius: 5px;
+        }
+        .item4{
+            grid-area: item4;
+            border-color: rgba(255, 255, 255, 0.8);
+            border-style:solid;
+            border-radius: 5px;
+        }
+        .item5{
+            grid-area: item5;
+            border-color: rgba(255, 255, 255, 0.8);
+            border-style:solid;
+            border-radius: 5px;
+        }
+
+</style>
+
     <meta charset="utf-8">
     <title>Dashboard</title>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -53,18 +109,17 @@
         function drawVisualization() {
             // Some raw data (not necessarily accurate)
             var data = google.visualization.arrayToDataTable([
-                ['hospital_id', 'Alcoholismo', 'sum(paciente.cancer)', 'sum(paciente.cardiopatia)',
-                'sum(paciente.colesterol)', 'sum(paciente.hepatitis)', 'sum(paciente.hipertension)',
-                'sum(paciente.reuma)', 'sum(paciente.tabaquismo)'],
+                ['Identificador hospital', 'EPOC','Alcoholismo', 'Cancer', 'Cardiopatia',
+                'Colesterol', 'Hepatitis', 'Hipertension','Reuma', 'Tabaquismo'],
                 <?php
-                $query = "SELECT hospital_id, sum(paciente.alcoholismo), sum(paciente.cancer), sum(paciente.cardiopatia), sum(paciente.colesterol),
+                $query = "SELECT hospital_id, sum(paciente.epoc), sum(paciente.alcoholismo), sum(paciente.cancer), sum(paciente.cardiopatia), sum(paciente.colesterol),
                             sum(paciente.hepatitis), sum(paciente.hipertension), sum(paciente.reuma), sum(paciente.tabaquismo)
                             FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
                             WHERE (((paciente.alcoholismo)=1) OR ((paciente.cancer)>0) OR ((paciente.cardiopatia)=1) OR ((paciente.colesterol)=1) OR ((paciente.hepatitis)=1) OR ((paciente.hipertension)=1) OR ((paciente.reuma)=1) OR ((paciente.tabaquismo)=1) OR ((paciente.epoc)=1))
-                            group by hecho.hospital_id";
+                            GROUP BY hecho.hospital_id";
                 $exec = mysqli_query($con,$query);
                 while($row = mysqli_fetch_array($exec)){
-                    echo "[".$row['hospital_id'].",".$row['sum(paciente.alcoholismo)'].", ".$row['sum(paciente.cancer)'].", ".$row['sum(paciente.cardiopatia)'].",
+                    echo "[".$row['hospital_id'].",".$row['sum(paciente.epoc)'].",".$row['sum(paciente.alcoholismo)'].", ".$row['sum(paciente.cancer)'].", ".$row['sum(paciente.cardiopatia)'].",
                     ".$row['sum(paciente.colesterol)'].", ".$row['sum(paciente.hepatitis)'].", ".$row['sum(paciente.hipertension)'].", ".$row['sum(paciente.reuma)'].",
                     ".$row['sum(paciente.tabaquismo)']."],";
                 }
@@ -77,21 +132,18 @@
                 hAxis: {title: 'Hospital'},
 
                 seriesType: 'bars',
-                series: {8: {type: 'line'}}        };
-
-				seriesType: 'bars'};
+                series: {10: {type: 'line'}}};
 
             var chart = new google.visualization.ComboChart(document.getElementById('barras_hospitales'));
             chart.draw(data, options);
         }
     </script>
-
     <script type="text/javascript">
         google.charts.load("current", {packages:["corechart"]});
         google.charts.setOnLoadCallback(drawChart);
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
-                ['hospital_id', 'count(hecho.uci)'],
+                ['Identificador hospital', 'Nº ingresados UCI'],
                 <?php
                 $query = "SELECT hecho.hospital_id, count(hecho.uci) 
                             FROM test.hecho WHERE hecho.uci=\"Si\" 
@@ -104,11 +156,11 @@
             ]);
 
             var options = {
-                title: 'Pacientes ingresados actualmente en la UCI según los distintos hospitales',
-                is3D: true,
+                title: 'Número de ingrasados en UCI por cada hospital',
+                pieHole: 0.4,
             };
 
-            var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+            var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
             chart.draw(data, options);
         }
     </script>
@@ -167,7 +219,7 @@
 							$r4=$row['count(hecho.hospital_id)'];
 						}
 					}
-					
+
 					echo "[".$i.",".$r1.",".$r2.",".$r3.",".$r4."],";					
 				}                
 				?>				
@@ -183,59 +235,78 @@
             chart.draw(data, options);
         }
     </script>
-
     <script type="text/javascript">
-        google.charts.load('current', {'packages':['table']});
-        google.charts.setOnLoadCallback(drawTable);
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawVisualization);
 
-        function drawTable() {
+        function drawVisualization() {
+            // Some raw data (not necessarily accurate)
             var data = google.visualization.arrayToDataTable([
-                ['edad', 'sexo', 'uci'],
+                [ 'Edad', 'Mujeres', 'Hombres'],
                 <?php
-                $query = "SELECT paciente.edad, paciente.sexo, hecho.uci
+                $query1 = "SELECT '0-19' ,count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END),count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)
                             FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
-                            where hospital_id='1' and fallecido='No' and sexo='0'
-                            group by edad";
-                $exec = mysqli_query($con,$query);
-                while($row = mysqli_fetch_array($exec)){
-                    echo "[".$row['edad'].", ".$row['sexo'].",'".$row['uci']."'],";
+                            WHERE paciente.edad>0 AND paciente.edad<20";
+                $exec1 = mysqli_query($con,$query1);
+                $query2 = "SELECT '20-39' ,count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END),count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)
+                            FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
+                            WHERE paciente.edad>=20 AND paciente.edad<40";
+                $exec2 = mysqli_query($con,$query2);
+                $query3 = "SELECT '40-59' ,count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END),count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)
+                            FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
+                            WHERE paciente.edad>=40 AND paciente.edad<60";
+                $exec3 = mysqli_query($con,$query3);
+                $query4 = "SELECT '60-79' ,count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END),count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)
+                            FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
+                            WHERE paciente.edad>=60 AND paciente.edad<80";
+                $exec4 = mysqli_query($con,$query4);
+                $query5 = "SELECT '80-100' ,count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END),count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)
+                            FROM test.paciente INNER JOIN test.hecho ON paciente.id = hecho.cliente_id
+                            WHERE paciente.edad>=80 AND paciente.edad<100";
+                $exec5 = mysqli_query($con,$query5);
+                while($row = mysqli_fetch_array($exec1)){
+                    echo "['".$row['0-19']."',".$row['count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END)'].",".$row['count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)']."],";
+                }
+                while($row = mysqli_fetch_array($exec2)){
+                    echo "['".$row['20-39']."',".$row['count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END)'].",".$row['count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)']."],";
+                }
+                while($row = mysqli_fetch_array($exec3)){
+                    echo "['".$row['40-59']."',".$row['count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END)'].",".$row['count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)']."],";
+                }
+                while($row = mysqli_fetch_array($exec4)){
+                    echo "['".$row['60-79']."',".$row['count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END)'].",".$row['count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)']."],";
+                }
+                while($row = mysqli_fetch_array($exec5)){
+                    echo "['".$row['80-100']."',".$row['count(CASE WHEN paciente.sexo = 1 THEN hecho.cliente_id END)'].",".$row['count(CASE WHEN paciente.sexo = 0 THEN hecho.cliente_id END)']."],";
                 }
                 ?>
             ]);
 
-            var table = new google.visualization.Table(document.getElementById('table_div'));
+            var options = {
+                title : 'Total de pacientes ingresados por rangos de edad según su género',
+                vAxis: {title: 'Pacientes'},
+                hAxis: {title: 'Rango de edad'},
+                seriesType: 'bars',
+            };
 
-            table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+            var chart = new google.visualization.ComboChart(document.getElementById('barras_genero'));
+            chart.draw(data, options);
         }
     </script>
 
-
 </head>
 <body>
-    <h2>Panel informativo</h2>
-    <tr></tr>
-    <table>
-        <tr>
-            <td><div id="barchart_material" style="width:300px; height: 290px;"></div></td>
-            <td><div id="curve_chart" style="width: 800px; height: 290px"></div></td>
-            <td><div id="piechart_3d" style="width: 380px; height: 290px;"></div></td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <td><div id="barras_hospitales" style="width: 840px; height: 420px;"></div></td>
-            <td><div id="table_div" style="width: 300px; height: 380px;"></div></td>
-        </tr>
-    </table>
 
+<div class="grid-container">
+    <div class="header" style="text-shadow: 2px 2px 5px cornflowerblue"><h2>Panel informativo</h2></div>
 
+    <div class="item1" id="barchart_material"style="width: 370px; height: 199px;"></div>
+    <div class="item2" id="curve_chart"style="width: 520px; height: 199px;"></div>
+    <div class="item3" id="donutchart" style="width: 300px; height: 199px;"></div>
 
-    <!--
-    <div id="barchart_material" style="width: 900px; height: 500px;"></div>
-    <div id="barras_hospitales" style="width: 900px; height: 500px;"></div>
-    <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
-    <div id="curve_chart" style="width: 900px; height: 500px"></div>
-    <div id="table_div"></div>
-    !-->
+    <div class="item4" id="barras_hospitales" style="height: 300px;"></div>
+    <div class="item5" id="barras_genero" style="width: 300px;"></div>
+
+</div>
 </body>
 </html>

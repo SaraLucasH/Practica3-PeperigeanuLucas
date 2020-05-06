@@ -12,53 +12,30 @@
 	 text-align:center;
 	 font-family:arial;
 }
-.item1,.item5,.item2,.item3,.item7{
-	min-width:300px;
-	width: 900px;
-	min-height:200px;
-	height: 500px;
-}
-
-.grid-containerDonut{
-	min-width:300px;
-	width: 900px;
-	min-height:200px;
-	height: 500px;
-}
-.item4,.item6{
-	min-width:300px;
-	width: 445px;
-	min-height:200px;
-	height: 300px;
-}
-
 .grid-container {
-  display: grid;
-  
+  display: grid;  
   height:100%;
   min-height:850px;
   width: 100%;
   min-width: 750px;
   margin: 0 auto; 
-	grid-template-rows:  auto auto auto;
-  grid-template-columns: 50% 50%;
-  grid-gap: 5px;
+  grid-template-rows:   repeat(auto-fit, minmax(200px, 400px));
+  grid-template-columns: repeat(auto-fit, minmax(200px,600px));
+  grid-gap: 10px;  
+  padding-left:10px;
+  padding-right:10px;
   
-}
-.grid-containerDonut {
-  display: grid;
-  background: #7fbca9; 
-	grid-template-rows:  auto;
-  grid-template-columns: 50% 50%;
-  grid-gap: 5px;
-  
+  .grid-containerDonut {
+	display: grid;
+	background: #7fbca9; 
+	grid-template-rows:   repeat(auto-fit, minmax(100px, 200px));
+	grid-template-columns: repeat(auto-fit, minmax(100px,300px)); 
+	grid-gap: 5px; 
+	padding-left:10px;
+	padding-right:10px;
+	}
 }
 
-.grid-container div {
-  color: white;
-  font-size: 20px;
-  padding: 5px;
-}
 </style>
 
     <meta charset="utf-8">
@@ -396,15 +373,16 @@
 		<h2>Panel informativo</h2>
 </div>
 <section class="grid-container">   
-	<div class="item7" id="curve_chart2019"></div>
-	<div class="item2" id="curve_chart"></div>	
-	<div class="item5" id="barras_hospitales"></div>	
-	<div class="item3" id="barras_genero"></div>
+	<div  id="curve_chart2019"></div>
+	<div  id="curve_chart"></div>	
+	<div  id="barras_hospitales"></div>	
+	<div  id="barras_genero"></div>
+	<div id="barchart_material"></div>
 	<div class="grid-containerDonut">
-		<div class="item4" id="donutchart"></div>	
-		<div class="item6" id="donutchart2019"></div>
+		<div id="donutchart"></div>	
+		<div id="donutchart2019"></div>
 	</div>
-	<div class="item1" id="barchart_material"></div>	
+		
 </section>
 </body>
 </html>

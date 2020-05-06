@@ -7,61 +7,58 @@
 <head>
 <style>
 .header{
-    grid-area: header;
-    background-color: aquamarine;
-    font-family: "Lucida Console";
-    font-width: bold;
+	 background:#deece7;
+	 border-style: double;
+	 text-align:center;
+	 font-family:arial;
+}
+.item1,.item5,.item2,.item3,.item7{
+	min-width:300px;
+	width: 900px;
+	min-height:200px;
+	height: 500px;
 }
 
-.grid-container{
-    display: grid;
-    grid-gap: 8px;
-    padding: 10px;
-    background-color: lightsteelblue;
-    grid-template-areas:
-    'header header header'
-    'item1 item2 item3'
-    'item4 item4 item5';
-
+.grid-containerDonut{
+	min-width:300px;
+	width: 900px;
+	min-height:200px;
+	height: 500px;
 }
-.grid-container > div {
-    background-color: rgba(255, 255, 255, 0.8);
-    text-align: center;
-    font-size: 20px;
+.item4,.item6{
+	min-width:300px;
+	width: 445px;
+	min-height:200px;
+	height: 300px;
 }
 
-        .item1{
-            grid-area: item1;
-            border-color: rgba(255, 255, 255, 0.8);
-            border-style:solid;
-            border-radius: 5px;
-        }
+.grid-container {
+  display: grid;
+  
+  height:100%;
+  min-height:850px;
+  width: 100%;
+  min-width: 750px;
+  margin: 0 auto; 
+	grid-template-rows:  auto auto auto;
+  grid-template-columns: 50% 50%;
+  grid-gap: 5px;
+  
+}
+.grid-containerDonut {
+  display: grid;
+  background: #7fbca9; 
+	grid-template-rows:  auto;
+  grid-template-columns: 50% 50%;
+  grid-gap: 5px;
+  
+}
 
-        .item2{
-            grid-area: item2;
-            border-color: rgba(255, 255, 255, 0.8);
-            border-style:solid;
-            border-radius: 5px;
-        }
-        .item3{
-            grid-area: item3;
-            border-color: rgba(255, 255, 255, 0.8);
-            border-style:solid;
-            border-radius: 5px;
-        }
-        .item4{
-            grid-area: item4;
-            border-color: rgba(255, 255, 255, 0.8);
-            border-style:solid;
-            border-radius: 5px;
-        }
-        .item5{
-            grid-area: item5;
-            border-color: rgba(255, 255, 255, 0.8);
-            border-style:solid;
-            border-radius: 5px;
-        }
-
+.grid-container div {
+  color: white;
+  font-size: 20px;
+  padding: 5px;
+}
 </style>
 
     <meta charset="utf-8">
@@ -93,8 +90,9 @@
             ]);
 
             var options = {
-                title: 'Número de fallecidos por cada hospital',                
-                bars: 'horizontal' // Required for Material Bar Charts.
+                title: 'Número total de fallecidos por cada hospital',
+				legend: { position: 'none'},				
+                bars: 'horizontal'		
             };
 
             var chart = new google.charts.Bar(document.getElementById('barchart_material'));
@@ -127,12 +125,13 @@
             ]);
 
             var options = {
-                title : 'Total de personas por cada hospital agrupadas por patologías',
+                title : 'Total de personas ingresadas por hospital agrupadas por patologías',
                 vAxis: {title: 'Total de personas'},
                 hAxis: {title: 'Hospital'},
 
                 seriesType: 'bars',
-                series: {10: {type: 'line'}}};
+                series: {10: {type: 'line'}},
+				width: '100%', height: '100%'};
 
             var chart = new google.visualization.ComboChart(document.getElementById('barras_hospitales'));
             chart.draw(data, options);
@@ -146,7 +145,8 @@
                 ['Identificador hospital', 'Nº ingresados UCI'],
                 <?php
                 $query = "SELECT hecho.hospital_id, count(hecho.uci) 
-                            FROM test.hecho WHERE hecho.uci=\"Si\" 
+                            FROM test.hecho INNER JOIN test.tiempo ON tiempo.id = hecho.fecha_ingreso_id 
+							WHERE hecho.uci=\"Si\"	AND tiempo.anio='2020'						
                             group by hecho.hospital_id";
                 $exec = mysqli_query($con,$query);
                 while($row = mysqli_fetch_array($exec)){
@@ -156,11 +156,38 @@
             ]);
 
             var options = {
-                title: 'Número de ingrasados en UCI por cada hospital',
-                pieHole: 0.4,
+                title: 'Número de ingresados en UCI en el año 2020 por cada hospital',
+                pieHole: 0.4
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+            chart.draw(data, options);
+        }
+    </script>
+	<script type="text/javascript">
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Identificador hospital', 'Nº ingresados UCI'],
+                <?php
+                $query = "SELECT hecho.hospital_id, count(hecho.uci) 
+                            FROM test.hecho INNER JOIN test.tiempo ON tiempo.id = hecho.fecha_ingreso_id 
+							WHERE hecho.uci=\"Si\"	AND tiempo.anio='2019'						
+                            group by hecho.hospital_id";
+                $exec = mysqli_query($con,$query);
+                while($row = mysqli_fetch_array($exec)){
+                    echo "['".$row['hospital_id']."',".$row['count(hecho.uci)']."],";
+                }
+                ?>
+            ]);
+
+            var options = {
+                title: 'Número de ingresados en UCI en el año 2019 por cada hospital',
+                pieHole: 0.4
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('donutchart2019'));
             chart.draw(data, options);
         }
     </script>
@@ -172,50 +199,49 @@
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
                 [ 'Mes', 'Hospital 1', 'Hospital 2', 'Hospital 3', 'Hospital 4'],
-                <?php
-                $query1 = "SELECT tiempo.mes, count(hecho.hospital_id)
-                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
-						WHERE hecho.hospital_id=1 AND tiempo.anio='2020'
-                        group by mes";		
-                $exec1 = mysqli_query($con,$query1);
-				$query2 = "SELECT tiempo.mes, count(hecho.hospital_id)
-                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
-						WHERE hecho.hospital_id=2 AND tiempo.anio='2020'
-                        group by mes";
-                $exec2 = mysqli_query($con,$query2);
-				$query3 = "SELECT tiempo.mes, count(hecho.hospital_id)
-                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
-						WHERE hecho.hospital_id=3 AND tiempo.anio='2020'
-                        group by mes";
-                $exec3 = mysqli_query($con,$query3);
-				$query4 = "SELECT tiempo.mes, count(hecho.hospital_id)
-                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
-						WHERE hecho.hospital_id=4 AND tiempo.anio='2020'
-                        group by mes";
-                $exec4 = mysqli_query($con,$query4);
-				
+                <?php				
 				for ($i = 1; $i <= 12; $i++) {					
 					$r1=0;
 					$r2=0;
 					$r3=0;
 					$r4=0;
+					$query1 = "SELECT tiempo.mes as mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=1 AND tiempo.mes=".$i." AND tiempo.anio=2020
+                        group by mes";		
+					$exec1 = mysqli_query($con,$query1);
 					while($row = mysqli_fetch_array($exec1)){
-						if($row['mes']==$i){							
+						if($row[0]==$i){							
 							$r1=$row['count(hecho.hospital_id)'];
 						}
-					}					
+					}
+					$query2 = "SELECT tiempo.mes as mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=2  AND tiempo.mes=".$i." AND tiempo.anio=2020
+                        group by mes";
+					$exec2 = mysqli_query($con,$query2);
 					while($row = mysqli_fetch_array($exec2)){
-						if($row['mes']==$i){
+						if($row[0]==$i){
 							$r2=$row['count(hecho.hospital_id)'];
 						}
 					}
+					$query3 = "SELECT tiempo.mes as mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=3  AND tiempo.mes=".$i." AND tiempo.anio=2020
+                        group by mes";
+					$exec3 = mysqli_query($con,$query3);
 					while($row = mysqli_fetch_array($exec3)){
-						if($row['mes']==$i){
+						if($row[0]==$i){
 							$r3=$row['count(hecho.hospital_id)'];
 						}
 					}
+					$query4 = "SELECT tiempo.mes as mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=4  AND tiempo.mes=".$i." AND tiempo.anio=2020
+                        group by mes";
+					$exec4 = mysqli_query($con,$query4);
 					while($row = mysqli_fetch_array($exec4)){
-						if($row['mes']==$i){
+						if($row[0]==$i){
 							$r4=$row['count(hecho.hospital_id)'];
 						}
 					}
@@ -231,6 +257,75 @@
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        }
+    </script>
+	<script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                [ 'Mes', 'Hospital 1', 'Hospital 2', 'Hospital 3', 'Hospital 4'],
+                <?php                
+				for ($i = 1; $i <= 12; $i++) {					
+					$r1=0;
+					$r2=0;
+					$r3=0;
+					$r4=0;
+					$query1 = "SELECT tiempo.mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=1  AND tiempo.mes=".$i." AND tiempo.anio=2019
+                        group by mes";		
+					$exec1 = mysqli_query($con,$query1);
+					while($row = mysqli_fetch_array($exec1)){
+						if($row['mes']==$i){							
+							$r1=$row['count(hecho.hospital_id)'];
+						}
+					}	
+					$query2 = "SELECT tiempo.mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=2  AND tiempo.mes=".$i." AND tiempo.anio=2019
+                        group by mes";
+					$exec2 = mysqli_query($con,$query2);
+					while($row = mysqli_fetch_array($exec2)){
+						if($row['mes']==$i){
+							$r2=$row['count(hecho.hospital_id)'];
+						}
+					}
+					$query3 = "SELECT tiempo.mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=3 AND tiempo.mes=".$i." AND tiempo.anio=2019
+                        group by mes";
+					$exec3 = mysqli_query($con,$query3);
+					while($row = mysqli_fetch_array($exec3)){
+						if($row['mes']==$i){
+							$r3=$row['count(hecho.hospital_id)'];
+						}
+					}
+					$query4 = "SELECT tiempo.mes, count(hecho.hospital_id)
+                        FROM test.tiempo INNER JOIN test.hecho ON tiempo.id = hecho.fecha_ingreso_id  
+						WHERE hecho.hospital_id=4 AND tiempo.mes=".$i." AND tiempo.anio=2019
+                        group by mes";
+					$exec4 = mysqli_query($con,$query4);
+					while($row = mysqli_fetch_array($exec4)){
+						if($row['mes']==$i){
+							$r4=$row['count(hecho.hospital_id)'];
+						}
+					}
+
+					echo "[".$i.",".$r1.",".$r2.",".$r3.",".$r4."],";					
+				}                
+				?>				
+            ]);
+            var options = {
+                title: 'Número de pacientes ingresados por mes en el año 2019',
+                curveType: 'function',
+                legend: { position: 'top' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart2019'));
 
             chart.draw(data, options);
         }
@@ -286,7 +381,8 @@
                 title : 'Total de pacientes ingresados por rangos de edad según su género',
                 vAxis: {title: 'Pacientes'},
                 hAxis: {title: 'Rango de edad'},
-                seriesType: 'bars',
+                seriesType: 'bars'
+				
             };
 
             var chart = new google.visualization.ComboChart(document.getElementById('barras_genero'));
@@ -295,18 +391,20 @@
     </script>
 
 </head>
-<body>
-
-<div class="grid-container">
-    <div class="header" style="text-shadow: 2px 2px 5px cornflowerblue"><h2>Panel informativo</h2></div>
-
-    <div class="item1" id="barchart_material"style="width: 370px; height: 199px;"></div>
-    <div class="item2" id="curve_chart"style="width: 520px; height: 199px;"></div>
-    <div class="item3" id="donutchart" style="width: 300px; height: 199px;"></div>
-
-    <div class="item4" id="barras_hospitales" style="height: 300px;"></div>
-    <div class="item5" id="barras_genero" style="width: 300px;"></div>
-
+<body style="background: #7fbca9;">
+<div class="header">
+		<h2>Panel informativo</h2>
 </div>
+<section class="grid-container">   
+	<div class="item7" id="curve_chart2019"></div>
+	<div class="item2" id="curve_chart"></div>	
+	<div class="item5" id="barras_hospitales"></div>	
+	<div class="item3" id="barras_genero"></div>
+	<div class="grid-containerDonut">
+		<div class="item4" id="donutchart"></div>	
+		<div class="item6" id="donutchart2019"></div>
+	</div>
+	<div class="item1" id="barchart_material"></div>	
+</section>
 </body>
 </html>
